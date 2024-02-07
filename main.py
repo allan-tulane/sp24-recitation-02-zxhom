@@ -6,9 +6,11 @@ CMPS 2200  Recitation 2
 import tabulate
 import time
 ###
+import math
+
 
 def simple_work_calc(n, a, b):
-	"""Compute the value of the recurrence $W(n) = aW(n/b) + n
+  """Compute the value of the recurrence $W(n) = aW(n/b) + n
 
 	Params:
 	n......input integer
@@ -16,12 +18,27 @@ def simple_work_calc(n, a, b):
 	b......input split factor
 
 	Returns: the value of W(n).
+	
 	"""
-	# TODO
-	pass
+  if n == 1:
+    return 1
+
+  else:
+    return a * simple_work_calc((n // b), a, b) + n
+
+
+# recursively call simple_work_calc with n nodes divides by split factor b and coefficient a, added together w additional work from linear n
+
+# use geometric or arithmetic equation; this only calcs cost for 1 level ; max levels (i) is log_2(n) == depth of tree
+
+#W = 3W(n/2) + n; max depth is log_3n
+
+#a > b leaf dominated
+#a < b root dominated; splitting input faster than new node generation
+
 
 def work_calc(n, a, b, f):
-	"""Compute the value of the recurrence $W(n) = aW(n/b) + f(n)
+  """Compute the value of the recurrence $W(n) = aW(n/b) + f(n)
 
 	Params:
 	n......input integer
@@ -32,11 +49,23 @@ def work_calc(n, a, b, f):
 
 	Returns: the value of W(n).
 	"""
-	# TODO
-	pass
+  # TODO
+  if n == 1:
+    return 1
+
+  else:
+    return a * work_calc((n // b), a, b, f) + f(n)
+
+
+# recursively call work_calc with n nodes divides by split factor b and coefficient a, added together w additional work from function f of n input
+
+#work_calc(8, 2, 2, 1)
+
+#pass
+
 
 def span_calc(n, a, b, f):
-	"""Compute the span associated with the recurrence $W(n) = aW(n/b) + f(n)
+  """Compute the span associated with the recurrence $W(n) = aW(n/b) + f(n)
 
 	Params:
 	n......input integer
@@ -47,13 +76,20 @@ def span_calc(n, a, b, f):
 
 	Returns: the value of W(n).
 	"""
-	# TODO
-	pass
+  # TODO
+  if n == 1:
+    return 1
+
+  else:
+    return span_calc((n // b), a, b, f) + f(n)
+
+  pass
 
 
-
-def compare_work(work_fn1, work_fn2, sizes=[10, 20, 50, 100, 1000, 5000, 10000]):
-	"""
+def compare_work(work_fn1,
+                 work_fn2,
+                 sizes=[10, 20, 50, 100, 1000, 5000, 10000]):
+  """
 	Compare the values of different recurrences for 
 	given input sizes.
 
@@ -62,43 +98,41 @@ def compare_work(work_fn1, work_fn2, sizes=[10, 20, 50, 100, 1000, 5000, 10000])
 	(n, work_fn1(n), work_fn2(n), ...)
 	
 	"""
-	result = []
-	for n in sizes:
-		# compute W(n) using current a, b, f
-		result.append((
-			n,
-			work_fn1(n),
-			work_fn2(n)
-			))
-	return result
+  result = []
+  for n in sizes:
+    # compute W(n) using current a, b, f
+    result.append((n, work_fn1(n), work_fn2(n)))
+  return result
+
 
 def print_results(results):
-	""" done """
-	print(tabulate.tabulate(results,
-							headers=['n', 'W_1', 'W_2'],
-							floatfmt=".3f",
-							tablefmt="github"))
+  """ done """
+  print(
+      tabulate.tabulate(results,
+                        headers=['n', 'W_1', 'W_2'],
+                        floatfmt=".3f",
+                        tablefmt="github"))
 
 
-
-def compare_span(span_fn1, span_fn2, sizes=[10, 20, 50, 100, 1000, 5000, 10000]):
-	"""
+def compare_span(span_fn1,
+                 span_fn2,
+                 sizes=[10, 20, 50, 100, 1000, 5000, 10000]):
+  """
 	Compare the values of different recurrences for 
 	given input sizes.
 
 	Returns:
 	A list of tuples of the form
-	(n, work_fn1(n), work_fn2(n), ...)
+	(n, 1(n), work_fn2(n), ...)
 	
 	"""
-	result = []
-	for n in sizes:
-		# compute W(n) using current a, b, f
-		result.append((
-			n,
-			span_fn1,
-			span_fn2
-			))
-	return result
-	
+  result = []
+  for n in sizes:
+    # compute W(n) using current a, b, f
+    result.append((n, span_fn1(n), span_fn2(n)))
+  return result
 
+
+#print_results(work_calc(20, 2, 2, lambda n: 1))
+#print_results(work_calc(20, 2, 2, lambda n: math.log(n)))
+#print_results(work_calc(20, 2, 2, lambda n: n))
